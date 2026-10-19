@@ -1,9 +1,9 @@
 # Community directory submission
 
 - Repository: `https://github.com/xielab2017/creator-workbench`
-- Plugin ID: `creator-workbench`
-- Name: `Creator Workbench`
-- Initial public release tag: `2.0.0`
+- Plugin ID: `xielab-creation-studio`
+- Name: `Creation Studio`
+- Initial public release tag: `2.0.1`
 - Minimum Obsidian version: `1.14.4`
 - Platform: desktop
 - License: MIT
@@ -15,7 +15,7 @@ Manage ideas, production, publishing schedules and reviews in linked notes, with
 
 ## Listing description
 
-Creator Workbench connects ideas, production, publication scheduling and review through one Markdown note per work. Initialize a six-page workspace with a dashboard, idea pool, production board, monthly publication calendar, work library and metrics view. The setup includes local templates, optional demonstration notes and a bundled original banner, and skips existing files.
+Creation Studio connects ideas, production, publication scheduling and review through one Markdown note per work. Initialize a six-page workspace with a dashboard, idea pool, production board, monthly publication calendar, work library and metrics view. The setup includes local templates, optional demonstration notes and a bundled original banner, and skips existing files.
 
 Track detailed production checklists, stage, next action, deadlines, drafts, finished-media links, actual publication dates and review evidence. Missing performance metrics remain missing. Demonstration works are excluded from real totals and calendar sync.
 

@@ -1,4 +1,4 @@
-# Creator Workbench
+# Creation Studio
 
 - Keep the Chinese interface and six linked views. Work notes are the source of truth.
 - Never overwrite existing vault notes during setup. Never read other plugins' configuration or credentials.

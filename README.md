@@ -1,4 +1,4 @@
-# Creator Workbench
+# Creation Studio
 
 A six-view creation workflow for Obsidian: dashboard, ideas, production board, publication calendar, work library and performance review. Each work is a single Markdown note; all views use its properties.
 
@@ -15,14 +15,14 @@ A six-view creation workflow for Obsidian: dashboard, ideas, production board, p
 
 ## Install and start
 
-Until this plugin is approved in the community directory, download `main.js`, `manifest.json` and `styles.css` from a GitHub release into `<vault>/.obsidian/plugins/creator-workbench/`. Enable **Creator Workbench** in Obsidian's Community plugins settings.
+Until this plugin is approved in the community directory, download `main.js`, `manifest.json` and `styles.css` from a GitHub release into `<vault>/.obsidian/plugins/xielab-creation-studio/`. Enable **Creation Studio** in Obsidian's Community plugins settings.
 
-1. Click the workbench ribbon icon, or run **Creator Workbench: 打开创作工作台** from the command palette.
+1. Click the workbench ribbon icon, or run **Creation Studio: 打开创作工作台** from the command palette.
 2. Choose a vault-relative folder. Example works are optional and off by default.
 3. Select **创建并打开** to initialize the six pages.
 4. Use **新建作品** to create your first real work. Fill in the original angle, draft, media links, next action and publication schedule in the same note.
 
-Settings → **Creator Workbench** lets you initialize another folder or fill in missing files. Selecting a different folder pauses cloud sync. The basic workflow needs no external account, network access, Dataview or other community plugin. Enable the built-in **Bases** plugin only if you use the backup `.base` tables.
+Settings → **Creation Studio** lets you initialize another folder or fill in missing files. Selecting a different folder pauses cloud sync. The basic workflow needs no external account, network access, Dataview or other community plugin. Enable the built-in **Bases** plugin only if you use the backup `.base` tables.
 
 The plugin stores title, draft, production checklists, media links and review notes in your vault. It does not publish posts to any content platform or retrieve platform analytics; enter observed metrics yourself.
 
@@ -49,7 +49,9 @@ See [privacy details](docs/PRIVACY.md), [Chinese guide](docs/使用说明.md) an
 
 ## Upgrading from the local template bundle
 
-Keep your existing workspace folder. Version 2 pauses the legacy calendar connection and does not import credentials from Full Calendar. Configure this plugin's own connection before enabling sync. You do not need to re-import the old template ZIP. Initialization skips existing notes; use the updated guide in this repository for version 2 calendar settings.
+Version 2.0.1 is named **Creation Studio**, with plugin ID `xielab-creation-studio`, because `creator-workbench` is already used by an unrelated community plugin. The repository URL stays the same. Use 2.0.1 or later rather than the superseded 2.0.0 preview.
+
+Disable the earlier local workbench plugin before enabling Creation Studio. Keep your existing workspace folder. Existing work-note types and the older `creator-hub` dashboard fence remain supported; new pages use `creation-studio` and scoped UI styles. Configure this plugin's own calendar connection before enabling sync. Credentials are not imported from the previous plugin ID or Full Calendar. You do not need to re-import the old template ZIP. Initialization skips existing notes; use the updated guide in this repository for the current calendar settings.
 
 ## Development
 

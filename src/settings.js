@@ -4,7 +4,7 @@ const W = require("./workspace");
 const { iCloudUrl } = require("./calendar");
 
 function freshSync() {
-  return { enabled: false, serverUrl: "https://caldav.icloud.com/", username: "", calendarName: "创作排期", calendarUrl: "", secretId: "creator-workbench-" + globalThis.crypto.randomUUID(), targets: {} };
+  return { enabled: false, serverUrl: "https://caldav.icloud.com/", username: "", calendarName: "创作排期", calendarUrl: "", secretId: "xielab-creation-studio-" + globalThis.crypto.randomUUID(), targets: {} };
 }
 
 function loadSettings(raw = {}) {
@@ -13,7 +13,7 @@ function loadSettings(raw = {}) {
   if (!legacy && raw.sync) {
     for (const key of ["enabled", "serverUrl", "username", "calendarName", "calendarUrl", "secretId", "targets"]) if (raw.sync[key] !== undefined) sync[key] = raw.sync[key];
   }
-  if (!/^creator-workbench-[a-z0-9-]+$/.test(sync.secretId || "")) sync.secretId = freshSync().secretId;
+  if (!/^xielab-creation-studio-[a-z0-9-]+$/.test(sync.secretId || "")) sync.secretId = freshSync().secretId;
   sync.enabled = sync.enabled === true;
   if (!sync.targets || typeof sync.targets !== "object" || Array.isArray(sync.targets)) sync.targets = {};
   return { schemaVersion: 2, root: W.workspacePath(raw.root || "40_Writing/创作管理"), sync, migratedLegacy: legacy && !!raw.sync?.enabled };
@@ -24,7 +24,7 @@ function report(task) { return Promise.resolve().then(task).catch(error => new N
 class SetupModal extends Modal {
   constructor(plugin) { super(plugin.app); this.plugin = plugin; this.root = plugin.root; this.examples = false; }
   onOpen() {
-    this.modalEl.classList.add("creator-modal");
+    this.modalEl.classList.add("xcs-modal");
     this.contentEl.createEl("h2", { text: "初始化创作工作区" });
     this.contentEl.createEl("p", { text: "创建六个入口、模板、备用表格和横幅。已有文件会跳过；作品数据保存在普通笔记中。" });
     new Setting(this.contentEl).setName("保存目录").setDesc("知识库内的相对路径，可选择一个新目录。").addText(text => text.setValue(this.root).onChange(value => this.root = value));

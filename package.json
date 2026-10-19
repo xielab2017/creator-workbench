@@ -1,6 +1,6 @@
 {
-  "name": "creator-workbench",
-  "version": "2.0.0",
+  "name": "xielab-creation-studio",
+  "version": "2.0.1",
   "private": true,
   "description": "A note-based creation workflow for Obsidian.",
   "license": "MIT",

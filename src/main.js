@@ -85,14 +85,14 @@ class WorkModal extends Modal {
     this.values = { title: "", platform: "待定", format: "图文", priority: "中", status: "选题", next_action: "补充自己的切入点", ...work, ...initial };
   }
   onOpen() {
-    this.modalEl.classList.add("creator-modal");
+    this.modalEl.classList.add("xcs-modal");
     element(this.contentEl, "h2", "", this.work ? "编辑作品与排期" : "新建作品");
-    element(this.contentEl, "p", "creator-muted", "同一篇笔记保存选题、稿件、素材、排期和复盘。日期均按北京时间。图文作品可跳过录制、剪辑阶段。");
-    if (this.work?.is_demo) element(this.contentEl, "p", "creator-demo-note", "当前编辑的是演示作品，不计入真实统计。新建作品会进入真实任务。");
+    element(this.contentEl, "p", "xcs-muted", "同一篇笔记保存选题、稿件、素材、排期和复盘。日期均按北京时间。图文作品可跳过录制、剪辑阶段。");
+    if (this.work?.is_demo) element(this.contentEl, "p", "xcs-demo-note", "当前编辑的是演示作品，不计入真实统计。新建作品会进入真实任务。");
     for (const key of ["title", "angle", "platform", "account_name", "format", "status", "priority", "next_action", "task_due"]) field(this.contentEl, key, this.values);
     element(this.contentEl, "h3", "", "排期与发布记录");
     for (const key of ["publish_date", "publish_time", "published_date", "published_url", "review_date", "review_completed_date"]) field(this.contentEl, key, this.values);
-    const actions = element(this.contentEl, "div", "creator-actions");
+    const actions = element(this.contentEl, "div", "xcs-actions");
     button(actions, "保存", async () => {
       if (!String(this.values.title || "").trim()) throw new Error("请先填写作品标题");
       const patch = {};
@@ -117,11 +117,11 @@ class MetricsModal extends Modal {
     this.values = { ...work };
   }
   onOpen() {
-    this.modalEl.classList.add("creator-modal");
+    this.modalEl.classList.add("xcs-modal");
     element(this.contentEl, "h2", "", "记录作品表现");
-    element(this.contentEl, "p", "creator-muted", this.work.title + " · 未记录的指标留空；只在真实观测为零时填 0。");
+    element(this.contentEl, "p", "xcs-muted", this.work.title + " · 未记录的指标留空；只在真实观测为零时填 0。");
     for (const key of ["metrics_date", "data_window", ...C.METRICS]) field(this.contentEl, key, this.values);
-    element(this.contentEl, "p", "creator-muted", "数据由你从平台后台录入；每篇作品保留最新快照。需要历史序列时，在作品正文追加快照表。统计窗口示例：发布后 24 小时、发布后 7 天。");
+    element(this.contentEl, "p", "xcs-muted", "数据由你从平台后台录入；每篇作品保留最新快照。需要历史序列时，在作品正文追加快照表。统计窗口示例：发布后 24 小时、发布后 7 天。");
     button(this.contentEl, "保存数据", async () => {
       const patch = { metrics_date: this.values.metrics_date || null, data_window: this.values.data_window || null };
       for (const key of C.METRICS) patch[key] = this.values[key] === "" || this.values[key] === undefined || this.values[key] === null ? null : Number(this.values[key]);
@@ -143,7 +143,7 @@ class GoalModal extends Modal {
     const goal = this.plugin.goals(this.month);
     this.values = { ...goal };
     element(this.contentEl, "h2", "", this.month + " 月度目标");
-    element(this.contentEl, "p", "creator-muted", "留空表示尚未设定。完成进度只统计真实作品。");
+    element(this.contentEl, "p", "xcs-muted", "留空表示尚未设定。完成进度只统计真实作品。");
     field(this.contentEl, "publish_target", this.values, "发布作品目标（篇）");
     field(this.contentEl, "review_target", this.values, "完成复盘目标（篇）");
     field(this.contentEl, "followers_gain_target", this.values, "净增粉丝目标（人，账号表中核对）");
@@ -169,7 +169,7 @@ class AccountModal extends Modal {
   constructor(plugin) { super(plugin.app); this.plugin = plugin; this.values = { snapshot_date: C.shanghaiDay(), platform: "公众号" }; }
   onOpen() {
     element(this.contentEl, "h2", "", "新增账号数据快照");
-    element(this.contentEl, "p", "creator-muted", "记录平台后台的真实数值。每次新建快照，保留以前的记录。");
+    element(this.contentEl, "p", "xcs-muted", "记录平台后台的真实数值。每次新建快照，保留以前的记录。");
     field(this.contentEl, "account_name", this.values);
     field(this.contentEl, "platform", this.values);
     field(this.contentEl, "snapshot_date", this.values, "快照日期");
@@ -198,7 +198,7 @@ class HubBlock extends MarkdownRenderChild {
     const relevant = file => file?.path?.startsWith(this.plugin.root + "/");
     this.registerEvent(this.plugin.app.metadataCache.on("changed", file => { if (relevant(file)) this.queue(); }));
     for (const event of ["create", "delete", "rename"]) this.registerEvent(this.plugin.app.vault.on(event, (file, old) => { if (relevant(file) || old?.startsWith(this.plugin.root + "/")) this.queue(); }));
-    this.registerEvent(this.plugin.app.workspace.on("creator-workbench:calendar-status", () => this.queue()));
+    this.registerEvent(this.plugin.app.workspace.on("xielab-creation-studio:calendar-status", () => this.queue()));
     this.render();
   }
   onunload() { if (this.timer) clearTimeout(this.timer); }
@@ -216,13 +216,13 @@ class HubBlock extends MarkdownRenderChild {
   render() {
     try {
       this.containerEl.replaceChildren();
-      this.rootEl = element(this.containerEl, "div", "creator-hub");
+      this.rootEl = element(this.containerEl, "div", "xcs-hub");
       const view = this.options.view || "dashboard";
       this.rootEl.dataset.view = view;
       this.navigation(view);
       const works = this.selected();
       this.toolbar(view);
-      if (this.state.mode === "demo") element(this.rootEl, "div", "creator-demo-note", "示例模式 · 卡片均为演示内容，不计入真实统计。点击「新建作品」开始记录自己的创作。");
+      if (this.state.mode === "demo") element(this.rootEl, "div", "xcs-demo-note", "示例模式 · 卡片均为演示内容，不计入真实统计。点击「新建作品」开始记录自己的创作。");
       if (view === "dashboard") this.dashboard(works);
       else if (view === "ideas") this.ideas(works);
       else if (view === "production") this.board(works);
@@ -230,40 +230,40 @@ class HubBlock extends MarkdownRenderChild {
       else if (view === "library") this.library(works);
       else if (view === "analytics") this.analytics(works);
       else throw new Error("未知页面类型：" + view);
-      const foot = element(this.rootEl, "div", "creator-footer");
+      const foot = element(this.rootEl, "div", "xcs-footer");
       this.noteLink(foot, this.plugin.root + "/使用说明.md", "使用说明");
       element(foot, "span", "", "数据保存在作品笔记中 · 日期按北京时间 · 平台数据手动录入");
     } catch (error) {
-      element(this.containerEl, "p", "creator-error", "创作视图未能加载：" + (error.message || error));
-      console.error("[creator-workbench]", error);
+      element(this.containerEl, "p", "xcs-error", "创作视图未能加载：" + (error.message || error));
+      console.error("[xielab-creation-studio]", error);
     }
   }
   navigation(view) {
-    const hero = element(this.rootEl, "div", "creator-hero");
+    const hero = element(this.rootEl, "div", "xcs-hero");
     const banner = this.plugin.app.vault.getAbstractFileByPath(this.plugin.root + "/素材/创作横幅.png");
     if (banner) {
       hero.classList.add("has-banner");
       hero.style.backgroundImage = `linear-gradient(90deg, rgba(249,246,240,.90), rgba(249,246,240,.45) 47%, rgba(249,246,240,0) 72%), url("${this.plugin.app.vault.getResourcePath(banner)}")`;
     }
-    element(hero, "div", "creator-eyebrow", "创作管理 / 从灵感到复盘");
+    element(hero, "div", "xcs-eyebrow", "创作管理 / 从灵感到复盘");
     const title = C.NAV.find(item => item[2] === view)?.[0] || "创作管理";
     element(hero, "h1", "", title);
     const subtitles = { dashboard: "看清作品表现，选定本月目标，推进下一步。", ideas: "把参考拆开，再写出只有你能提供的切入点。", production: "每篇作品一张卡片，拖动卡片推进制作。", calendar: "安排发布时间，让排期与创作进度保持一致。", library: "把稿件、成品、发布链接与复盘留在一起。", analytics: "记录作品与账号表现，让下一次创作有据可依。" };
     element(hero, "p", "", subtitles[view] || "");
-    const signature = element(hero, "div", "creator-hero-signature", "灵感有处安放 · 创作有迹可循");
+    const signature = element(hero, "div", "xcs-hero-signature", "灵感有处安放 · 创作有迹可循");
     signature.setAttribute("aria-hidden", "true");
-    const nav = element(this.rootEl, "nav", "creator-nav");
+    const nav = element(this.rootEl, "nav", "xcs-nav");
     const icons = ["layout-dashboard", "lightbulb", "clapperboard", "calendar-days", "folder-open", "chart-no-axes-combined"];
     const colors = ["#a58852", "#8e7aa6", "#aa7975", "#648e86", "#7088a8", "#9b7890"];
     C.NAV.forEach(([name, file, key], index) => {
       const item = button(nav, "", () => this.plugin.open(this.plugin.root + "/" + file), key === view ? "is-active" : "");
       item.style.setProperty("--nav-accent", colors[index]);
-      setIcon(element(item, "span", "creator-nav-icon"), icons[index]);
+      setIcon(element(item, "span", "xcs-nav-icon"), icons[index]);
       element(item, "span", "", name);
     });
   }
   toolbar(view) {
-    const tools = element(this.rootEl, "div", "creator-toolbar");
+    const tools = element(this.rootEl, "div", "xcs-toolbar");
     button(tools, "新建作品", () => new WorkModal(this.plugin).open(), "mod-cta");
     const select = element(tools, "select", "");
     [["real", "真实作品"], ["demo", "演示作品"]].forEach(([value, label]) => { const option = element(select, "option", "", label); option.value = value; });
@@ -271,7 +271,7 @@ class HubBlock extends MarkdownRenderChild {
     select.setAttribute("aria-label", "作品范围");
     select.onchange = () => { this.state.mode = select.value; this.render(); };
     if (["ideas", "production", "library", "analytics"].includes(view)) {
-      const input = element(tools, "input", "creator-search");
+      const input = element(tools, "input", "xcs-search");
       input.type = "search";
       input.placeholder = "搜索作品或下一步";
       input.value = this.state.search;
@@ -290,7 +290,7 @@ class HubBlock extends MarkdownRenderChild {
     if (view === "calendar") {
       button(tools, this.plugin.settings.sync.enabled ? "同步到 iCloud" : "查看日历连接说明", () => this.plugin.settings.sync.enabled ? this.plugin.calendar.sync(true) : this.plugin.open(this.plugin.root + "/日历同步说明.md"));
     }
-    button(tools, "刷新", () => this.render(), "creator-refresh");
+    button(tools, "刷新", () => this.render(), "xcs-refresh");
   }
   noteLink(parent, path, label) {
     const anchor = element(parent, "a", "internal-link", label);
@@ -300,15 +300,15 @@ class HubBlock extends MarkdownRenderChild {
     return anchor;
   }
   heading(text, description = "") {
-    const h = element(this.rootEl, "div", "creator-section-title");
+    const h = element(this.rootEl, "div", "xcs-section-title");
     element(h, "h2", "", text);
-    if (description) element(h, "p", "creator-muted", description);
+    if (description) element(h, "p", "xcs-muted", description);
     return h;
   }
-  empty(parent, message) { element(parent, "div", "creator-empty", message); }
+  empty(parent, message) { element(parent, "div", "xcs-empty", message); }
   table(parent, headers, rows) {
-    const wrap = element(parent, "div", "creator-table-wrap");
-    const table = element(wrap, "table", "creator-table");
+    const wrap = element(parent, "div", "xcs-table-wrap");
+    const table = element(wrap, "table", "xcs-table");
     const head = element(table, "tr", "");
     headers.forEach(h => element(head, "th", "", h));
     rows.forEach(row => {
@@ -318,7 +318,7 @@ class HubBlock extends MarkdownRenderChild {
     if (!rows.length) this.empty(wrap, "这里还没有记录。");
   }
   card(parent, work, compact = false) {
-    const card = element(parent, "article", "creator-card" + (compact ? " is-compact" : ""));
+    const card = element(parent, "article", "xcs-card" + (compact ? " is-compact" : ""));
     card.draggable = true;
     card.dataset.stage = work.status;
     card.dataset.workPath = work.path;
@@ -332,18 +332,18 @@ class HubBlock extends MarkdownRenderChild {
       card.classList.add("is-dragging");
     });
     card.addEventListener("dragend", () => card.classList.remove("is-dragging"));
-    const top = element(card, "div", "creator-card-top");
-    element(top, "span", "creator-pill", work.platform || "待定平台");
-    if (work.priority === "高") element(top, "span", "creator-priority", "高优先");
-    this.noteLink(card, work.path, work.title || work.name).classList.add("creator-card-title");
-    if (work.angle && !compact) element(card, "p", "creator-card-angle", work.angle);
-    element(card, "p", "creator-next", "下一步：" + (work.next_action || "待补充具体行动"));
-    const meta = element(card, "div", "creator-card-meta");
+    const top = element(card, "div", "xcs-card-top");
+    element(top, "span", "xcs-pill", work.platform || "待定平台");
+    if (work.priority === "高") element(top, "span", "xcs-priority", "高优先");
+    this.noteLink(card, work.path, work.title || work.name).classList.add("xcs-card-title");
+    if (work.angle && !compact) element(card, "p", "xcs-card-angle", work.angle);
+    element(card, "p", "xcs-next", "下一步：" + (work.next_action || "待补充具体行动"));
+    const meta = element(card, "div", "xcs-card-meta");
     const due = C.day(work.task_due);
-    if (due) element(meta, "span", C.overdue(work, C.shanghaiDay()) ? "creator-overdue" : "", "截止 " + due.slice(5));
+    if (due) element(meta, "span", C.overdue(work, C.shanghaiDay()) ? "xcs-overdue" : "", "截止 " + due.slice(5));
     const date = C.eventDate(work);
     if (date) element(meta, "span", "", (C.PUBLISHED.includes(work.status) ? "已发 " : "计划 ") + date.slice(5) + (work.publish_time && !C.PUBLISHED.includes(work.status) ? " " + work.publish_time : ""));
-    const actions = element(card, "div", "creator-card-actions");
+    const actions = element(card, "div", "xcs-card-actions");
     button(actions, "编辑", () => new WorkModal(this.plugin, work).open());
     button(actions, "数据", () => new MetricsModal(this.plugin, work).open());
     return card;
@@ -351,31 +351,31 @@ class HubBlock extends MarkdownRenderChild {
   dashboard(works) {
     const today = C.shanghaiDay();
     const stats = C.monthlyStats(this.plugin.works(), today);
-    const counts = element(this.rootEl, "div", "creator-kpis");
+    const counts = element(this.rootEl, "div", "xcs-kpis");
     [["真实作品", stats.total, "全部创作记录", "files"], ["制作中", stats.making, "写稿至待发布", "clapperboard"], ["本月已发布", stats.published, "按实际发布日期", "send"], ["待复盘", stats.needsReview, "把经验变成下一步", "notebook-pen"]].forEach(([label, count, hint, icon], index) => {
-      const tile = element(counts, "div", "creator-kpi");
+      const tile = element(counts, "div", "xcs-kpi");
       tile.dataset.tone = index;
-      setIcon(element(tile, "span", "creator-kpi-icon"), icon);
+      setIcon(element(tile, "span", "xcs-kpi-icon"), icon);
       element(tile, "span", "", label);
       element(tile, "strong", "", count);
       element(tile, "small", "", hint);
     });
     this.heading(today.slice(0, 7) + " 月度目标", "目标与完成进度只统计真实作品，示例不计入。");
     const goal = this.plugin.goals(today.slice(0, 7));
-    const grid = element(this.rootEl, "div", "creator-goals");
+    const grid = element(this.rootEl, "div", "xcs-goals");
     for (const [label, done, target] of [["发布作品", stats.published, goal.publish_target], ["完成复盘", stats.reviewed, goal.review_target]]) {
-      const box = element(grid, "div", "creator-goal");
+      const box = element(grid, "div", "xcs-goal");
       const value = C.number(target);
       element(box, "strong", "", label);
       element(box, "span", "", value === null ? "目标待设定" : `${done} / ${value} 篇`);
       if (value !== null && value > 0) { const progress = element(box, "progress", ""); progress.max = value; progress.value = Math.min(done, value); }
     }
-    const followerBox = element(grid, "div", "creator-goal");
+    const followerBox = element(grid, "div", "xcs-goal");
     element(followerBox, "strong", "", "净增粉丝");
     element(followerBox, "span", "", C.number(goal.followers_gain_target) === null ? "目标待设定" : `目标 ${C.display(goal.followers_gain_target)} 人`);
     this.noteLink(followerBox, this.plugin.root + "/05_数据库.md", "到账号快照核对");
     this.heading("创作流水线", this.state.mode === "demo" ? "以下阶段数量来自演示作品。" : "点击阶段进入相应页面；作品阶段与日历状态同步。");
-    const strip = element(this.rootEl, "div", "creator-stage-strip");
+    const strip = element(this.rootEl, "div", "xcs-stage-strip");
     C.STAGES.slice(0, 7).forEach((stage, index) => {
       const item = button(strip, "", () => this.plugin.open(this.plugin.root + "/" + (stage === "选题" ? "01_选题池.md" : C.PUBLISHED.includes(stage) ? "04_作品库.md" : "02_创作台.md")));
       element(item, "span", "", `${index + 1}. ${stage}`);
@@ -383,7 +383,7 @@ class HubBlock extends MarkdownRenderChild {
     });
     this.heading("接下来做什么", "按逾期、优先级和下一步截止日期排序。点击标题继续写作，点击编辑更新下一步。");
     const next = C.sortWork(works.filter(w => !["已归档", "搁置"].includes(w.status)), today).slice(0, 6);
-    this.table(this.rootEl, ["作品", "阶段", "下一步行动", "截止", "操作"], next.map(w => [td => this.noteLink(td, w.path, w.title), w.status, w.next_action || "待补充", td => element(td, "span", C.overdue(w, today) ? "creator-overdue" : "", w.task_due || "—"), td => button(td, "编辑", () => new WorkModal(this.plugin, w).open())]));
+    this.table(this.rootEl, ["作品", "阶段", "下一步行动", "截止", "操作"], next.map(w => [td => this.noteLink(td, w.path, w.title), w.status, w.next_action || "待补充", td => element(td, "span", C.overdue(w, today) ? "xcs-overdue" : "", w.task_due || "—"), td => button(td, "编辑", () => new WorkModal(this.plugin, w).open())]));
     this.heading("作品表现", "展示最近发布的作品；平台指标由你录入，缺失值显示为 —。");
     const recent = works.filter(C.published).sort((a, b) => b.published_date.localeCompare(a.published_date)).slice(0, 4);
     this.table(this.rootEl, ["作品", "实际发布", "阅读 / 播放", "收藏", "统计窗口", "操作"], recent.map(w => [td => this.noteLink(td, w.path, w.title), w.published_date, C.display(w.views), C.display(w.saves), w.data_window || "—", td => button(td, "录入数据", () => new MetricsModal(this.plugin, w).open())]));
@@ -391,10 +391,10 @@ class HubBlock extends MarkdownRenderChild {
   ideas(works) {
     const ideas = C.sortWork(works.filter(w => w.status === "选题"), C.shanghaiDay());
     this.heading("待打磨的选题", "参考 → 拆解 → 自己的切入点 → 决定开写。点开作品，可填写参考拆解和标题候选。");
-    const grid = element(this.rootEl, "div", "creator-idea-grid");
+    const grid = element(this.rootEl, "div", "xcs-idea-grid");
     ideas.forEach(work => {
       const card = this.card(grid, work);
-      button(card, "开始写稿", () => this.plugin.changeStage(work, "写稿"), "creator-start");
+      button(card, "开始写稿", () => this.plugin.changeStage(work, "写稿"), "xcs-start");
     });
     if (!ideas.length) this.empty(grid, "还没有待打磨的选题。点击新建作品，记下灵感和自己的切入点。");
     const parked = works.filter(w => w.status === "搁置");
@@ -405,14 +405,14 @@ class HubBlock extends MarkdownRenderChild {
   }
   board(works) {
     this.heading("制作进度看板", "拖动卡片改变阶段；日期、下一步和优先级可在卡片中编辑。图文作品可直接从写稿移到待发布。");
-    const board = element(this.rootEl, "div", "creator-board");
+    const board = element(this.rootEl, "div", "xcs-board");
     C.STAGES.slice(0, 7).forEach((stage, index) => {
-      const column = element(board, "section", "creator-column");
+      const column = element(board, "section", "xcs-column");
       column.dataset.stage = stage;
-      const header = element(column, "div", "creator-column-header");
+      const header = element(column, "div", "xcs-column-header");
       element(header, "span", "", stage);
       const items = C.sortWork(works.filter(w => w.status === stage), C.shanghaiDay());
-      element(header, "span", "creator-count", items.length);
+      element(header, "span", "xcs-count", items.length);
       column.addEventListener("dragover", event => { if (Array.from(event.dataTransfer?.types || []).includes("application/x-creator-work")) { event.preventDefault(); event.stopPropagation(); event.dataTransfer.dropEffect = "move"; column.classList.add("is-drop-target"); } });
       column.addEventListener("dragleave", event => { if (!column.contains(event.relatedTarget)) column.classList.remove("is-drop-target"); });
       column.addEventListener("drop", event => {
@@ -423,37 +423,37 @@ class HubBlock extends MarkdownRenderChild {
       });
       items.forEach(w => this.card(column, w, true));
       if (!items.length) this.empty(column, "拖入作品");
-      button(column, "新建作品", () => new WorkModal(this.plugin, null, { status: index >= 5 ? "选题" : stage }).open(), "creator-column-add");
+      button(column, "新建作品", () => new WorkModal(this.plugin, null, { status: index >= 5 ? "选题" : stage }).open(), "xcs-column-add");
     });
   }
   calendar(works) {
     const sync = this.plugin.calendar.state;
-    const panel = element(this.rootEl, "div", "creator-sync-status" + (sync.connected ? " is-connected" : ""));
-    element(panel, "span", "creator-sync-dot");
+    const panel = element(this.rootEl, "div", "xcs-sync-status" + (sync.connected ? " is-connected" : ""));
+    element(panel, "span", "xcs-sync-dot");
     element(panel, "span", "", sync.message);
     if (sync.lastSync) element(panel, "small", "", "最近同步 " + new Date(sync.lastSync).toLocaleString("zh-CN", { timeZone: "Asia/Shanghai", hour12: false }));
     this.heading("发布月历", "点击日期新建排期；拖动未发布卡片调整计划日期。已发布作品按实际日期显示。改排期会保留当前制作阶段。");
-    const controls = element(this.rootEl, "div", "creator-calendar-controls");
+    const controls = element(this.rootEl, "div", "xcs-calendar-controls");
     button(controls, "上个月", () => { this.state.month = C.shiftMonth(this.state.month, -1); this.render(); });
     element(controls, "strong", "", this.state.month);
     button(controls, "下个月", () => { this.state.month = C.shiftMonth(this.state.month, 1); this.render(); });
     button(controls, "本月", () => { this.state.month = C.shanghaiDay().slice(0, 7); this.render(); });
-    const grid = element(this.rootEl, "div", "creator-calendar");
-    ["一", "二", "三", "四", "五", "六", "日"].forEach(name => element(grid, "div", "creator-weekday", name));
+    const grid = element(this.rootEl, "div", "xcs-calendar");
+    ["一", "二", "三", "四", "五", "六", "日"].forEach(name => element(grid, "div", "xcs-weekday", name));
     const today = C.shanghaiDay();
     for (const cell of C.monthGrid(this.state.month)) {
-      const dayEl = element(grid, "section", "creator-day" + (!cell.current ? " is-other-month" : "") + (cell.date === today ? " is-today" : ""));
+      const dayEl = element(grid, "section", "xcs-day" + (!cell.current ? " is-other-month" : "") + (cell.date === today ? " is-today" : ""));
       dayEl.dataset.date = cell.date;
-      const dateButton = button(dayEl, String(Number(cell.date.slice(8))), () => new WorkModal(this.plugin, null, { publish_date: cell.date }).open(), "creator-day-number");
+      const dateButton = button(dayEl, String(Number(cell.date.slice(8))), () => new WorkModal(this.plugin, null, { publish_date: cell.date }).open(), "xcs-day-number");
       dateButton.setAttribute("aria-label", cell.date + " 新建排期");
       works.filter(w => C.eventDate(w) === cell.date).sort((a,b) => String(a.publish_time || "").localeCompare(String(b.publish_time || ""))).forEach(work => {
-        const event = element(dayEl, "div", "creator-event");
+        const event = element(dayEl, "div", "xcs-event");
         event.dataset.stage = work.status;
         event.draggable = !C.PUBLISHED.includes(work.status);
         event.addEventListener("dragstart", e => { e.stopPropagation(); if (!e.dataTransfer) return; e.dataTransfer.setData("application/x-creator-work", work.path); e.dataTransfer.effectAllowed = "move"; });
-        element(event, "span", "creator-event-stage", (work.publish_time && !C.PUBLISHED.includes(work.status) ? work.publish_time + " · " : "") + work.status);
+        element(event, "span", "xcs-event-stage", (work.publish_time && !C.PUBLISHED.includes(work.status) ? work.publish_time + " · " : "") + work.status);
         this.noteLink(event, work.path, work.title);
-        button(event, "改排期", () => new WorkModal(this.plugin, work).open(), "creator-event-edit");
+        button(event, "改排期", () => new WorkModal(this.plugin, work).open(), "xcs-event-edit");
       });
       dayEl.addEventListener("dragover", e => { if (Array.from(e.dataTransfer?.types || []).includes("application/x-creator-work")) { e.preventDefault(); e.stopPropagation(); dayEl.classList.add("is-drop-target"); } });
       dayEl.addEventListener("dragleave", e => { if (!dayEl.contains(e.relatedTarget)) dayEl.classList.remove("is-drop-target"); });
@@ -467,7 +467,7 @@ class HubBlock extends MarkdownRenderChild {
     }
     this.heading("尚未排期", "把下面的卡片拖到日期上，或点击编辑填写计划日期和时间。");
     const backlog = works.filter(w => !C.eventDate(w) && !C.PUBLISHED.includes(w.status) && w.status !== "搁置");
-    const list = element(this.rootEl, "div", "creator-idea-grid");
+    const list = element(this.rootEl, "div", "xcs-idea-grid");
     backlog.forEach(w => this.card(list, w, true));
     if (!backlog.length) this.empty(list, "没有尚未排期的作品。");
   }
@@ -481,7 +481,7 @@ class HubBlock extends MarkdownRenderChild {
         else element(td, "span", "", "—");
       }, td => { button(td, "编辑", () => new WorkModal(this.plugin, w).open()); button(td, "数据", () => new MetricsModal(this.plugin, w).open()); }
     ]));
-    const links = element(this.rootEl, "div", "creator-actions");
+    const links = element(this.rootEl, "div", "xcs-actions");
     this.noteLink(links, this.plugin.root + "/视图/作品总表.base", "打开原生 Bases 表格");
     this.noteLink(links, this.plugin.root + "/99_模板/作品模板.md", "查看作品模板");
   }
@@ -492,7 +492,7 @@ class HubBlock extends MarkdownRenderChild {
       ...C.METRICS.map(key => C.display(w[key])), C.interactionRate(w) === null ? "—" : (C.interactionRate(w) * 100).toFixed(1) + "%",
       td => button(td, "录入", () => new MetricsModal(this.plugin, w).open())
     ]));
-    element(this.rootEl, "p", "creator-muted", "互动 / 阅读播放 =（点赞 + 评论 + 收藏 + 分享）÷ 阅读 / 播放量。该比值统计互动次数，非去重用户转化率；四项互动数据或分母缺失时不计算，分母为 0 时不计算。");
+    element(this.rootEl, "p", "xcs-muted", "互动 / 阅读播放 =（点赞 + 评论 + 收藏 + 分享）÷ 阅读 / 播放量。该比值统计互动次数，非去重用户转化率；四项互动数据或分母缺失时不计算，分母为 0 时不计算。");
     this.heading("账号数据快照", "点击「记录账号快照」新增记录，旧快照保留。净增粉丝请比较同一平台、同一账号、相同统计口径的两个时点。");
     const accounts = this.plugin.records("creator-account-snapshot").filter(a => !a.is_demo).sort((a, b) => String(b.snapshot_date).localeCompare(String(a.snapshot_date)));
     this.table(this.rootEl, ["账号记录", "平台", "账号", "快照日期", "粉丝总数"], accounts.map(a => [td => this.noteLink(td, a.path, a.name), a.platform, a.account_name, a.snapshot_date, C.display(a.followers)]));
@@ -509,10 +509,12 @@ module.exports = class CreatorWorkbench extends Plugin {
     this.calendar = new CreatorCalendarSync(this);
     this.addSettingTab(new WorkbenchSettings(this.app, this));
     await this.saveSettings();
-    this.registerMarkdownCodeBlockProcessor("creator-hub", (source, el, ctx) => {
+    const renderHub = (source, el, ctx) => {
       try { ctx.addChild(new HubBlock(el, this, source.trim() ? JSON.parse(source) : {})); }
-      catch (error) { element(el, "p", "creator-error", "视图配置错误：" + error.message); }
-    });
+      catch (error) { element(el, "p", "xcs-error", "视图配置错误：" + error.message); }
+    };
+    this.registerMarkdownCodeBlockProcessor("creation-studio", renderHub);
+    this.registerMarkdownCodeBlockProcessor("creator-hub", renderHub);
     this.addCommand({ id: "open-workbench", name: "打开创作工作台", callback: () => this.openWorkbench().catch(error => new Notice(error.message)) });
     this.addCommand({ id: "initialize-workspace", name: "初始化创作工作区", callback: () => new SetupModal(this).open() });
     this.addCommand({ id: "new-work", name: "新建创作作品", callback: () => new WorkModal(this).open() });

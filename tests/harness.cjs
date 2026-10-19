@@ -48,7 +48,7 @@ function harness(rawSettings = {}, requestHTTPS = async () => { throw new Error(
     metadataCache.trigger('changed', file);
   } } };
   class Plugin {
-    constructor() { this.app = app; this.manifest = { id: 'creator-workbench' }; this.commands = []; }
+    constructor() { this.app = app; this.manifest = { id: 'xielab-creation-studio' }; this.commands = []; }
     async loadData() { return structuredClone(rawSettings); }
     async saveData(value) { this.saved = structuredClone(value); }
     registerEvent(ref) { events.push(ref); }
@@ -56,7 +56,7 @@ function harness(rawSettings = {}, requestHTTPS = async () => { throw new Error(
     addSettingTab(tab) { this.tab = tab; }
     addCommand(command) { this.commands.push(command); }
     addRibbonIcon() {}
-    registerMarkdownCodeBlockProcessor(name, processor) { this.processor = processor; }
+    registerMarkdownCodeBlockProcessor(name, processor) { this.processors ||= new Map(); this.processors.set(name, processor); this.processor = processor; }
   }
   class Modal {
     constructor() { this.app = app; this.modalEl = document.createElement('div'); this.contentEl = this.modalEl.createEl('div'); }
@@ -102,7 +102,7 @@ function harness(rawSettings = {}, requestHTTPS = async () => { throw new Error(
   const sandbox = { module: { exports: {} }, require: name => { if (name === 'obsidian') return obsidian; if (name === 'node:https') return https; throw new Error('Unexpected import ' + name); }, console, Buffer, URL, Date, TextEncoder, DOMParser: dom.window.DOMParser, document, window: dom.window, globalThis: { crypto: crypto.webcrypto }, setTimeout, clearTimeout, btoa, atob };
   vm.runInNewContext(fs.readFileSync(require.resolve('../main.js'), 'utf8'), sandbox, { filename: 'main.js' });
   const plugin = new sandbox.module.exports();
-  const render = view => { const container = document.body.createEl('div'); let block; plugin.processor(JSON.stringify({ view }), container, { addChild: child => { block = child; child.onload(); } }); return { container, block }; };
+  const render = (view, fence = 'creation-studio') => { const container = document.body.createEl('div'); let block; plugin.processors.get(fence)(JSON.stringify({ view }), container, { addChild: child => { block = child; child.onload(); } }); return { container, block }; };
   const cleanup = () => { plugin.onunload(); for (const id of intervals) dom.window.clearInterval(id); for (const ref of events) ref.target.offref(ref); dom.window.close(); };
   return { plugin, app, vault, dom, notices, modals, requests, secrets, secretReads: reads, opened, render, cleanup, YAML };
 }

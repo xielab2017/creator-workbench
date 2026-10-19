@@ -43,9 +43,9 @@ class CreatorCalendarSync {
   get app() { return this.plugin.app; }
   dispose() { this.disposed = true; this.pending = false; }
   reset() { this.state.connected = false; this.state.message = "连接设置已更新，请测试连接后启用同步"; this.notify(); }
-  notify() { this.app.workspace.trigger("creator-workbench:calendar-status"); }
+  notify() { this.app.workspace.trigger("xielab-creation-studio:calendar-status"); }
   credentials() {
-    if (!this.config.username?.trim() || !this.config.secretId?.startsWith("creator-workbench-")) throw new Error("请先在插件设置中保存 iCloud 账号和应用专用密码");
+    if (!this.config.username?.trim() || !this.config.secretId?.startsWith("xielab-creation-studio-")) throw new Error("请先在插件设置中保存 iCloud 账号和应用专用密码");
     const password = this.app.secretStorage.getSecret(this.config.secretId);
     if (!password) throw new Error("未找到本插件保存的应用专用密码，请在设置中重新填写");
     return { username: this.config.username.trim(), password };

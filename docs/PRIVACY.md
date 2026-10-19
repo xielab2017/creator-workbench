@@ -7,7 +7,7 @@ The core workflow is local and offline. There is no telemetry, advertising, anal
 - Work notes, goals, account snapshots, guides, optional demo notes, Bases views and a banner are written only inside the folder selected in the vault.
 - Initialization creates missing files and skips existing files. It does not overwrite user notes.
 - Plugin `data.json` contains the chosen root, calendar connection settings, Apple account identifier, calendar collection URL, a SecretStorage key ID and managed event mappings. Mappings include the fields already sent to iCloud and local note links. Treat this file as personal configuration; it is not a release asset.
-- The app-specific password is stored under a plugin-generated `creator-workbench-…` SecretStorage ID. It is not logged or stored in notes or plugin JSON. The plugin never automatically retrieves another plugin's credentials.
+- The app-specific password is stored under a plugin-generated `xielab-creation-studio-…` SecretStorage ID. It is not logged or stored in notes or plugin JSON. The plugin never automatically retrieves another plugin's credentials.
 - The plugin does not read arbitrary files outside the vault. It uses Obsidian's SecretStorage API for its own password and Node HTTPS for the optional connection.
 
 ## Optional remote service

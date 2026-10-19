@@ -47,23 +47,31 @@ test('seven opt-in examples have unique IDs, missing metrics and zero real total
   const h = await setup(t, true); const works = h.plugin.works();
   assert.equal(works.length, 7); assert.equal(new Set(works.map(work => work.work_id)).size, 7);
   for (const work of works) { assert.equal(work.is_demo, true); for (const key of ['views','likes','comments','saves','shares','followers_gain']) assert.equal(work[key], null); }
-  const { container } = h.render('dashboard'); assert(!container.querySelector('.creator-error'));
-  assert.deepEqual([...container.querySelectorAll('.creator-kpi strong')].map(el => el.textContent), ['0','0','0','0']);
+  const { container } = h.render('dashboard'); assert(!container.querySelector('.xcs-error'));
+  assert.deepEqual([...container.querySelectorAll('.xcs-kpi strong')].map(el => el.textContent), ['0','0','0','0']);
 });
 
 test('all six views render through the bundled Markdown processor', async t => {
   const h = await setup(t, true);
   for (const view of ['dashboard','ideas','production','calendar','library','analytics']) {
     const { container } = h.render(view);
-    assert(container.querySelector('.creator-hub[data-view="'+view+'"]')); assert.equal(container.querySelectorAll('.creator-nav button').length, 6);
-    assert(!container.querySelector('.creator-error'), container.textContent);
+    assert(container.querySelector('.xcs-hub[data-view="'+view+'"]')); assert.equal(container.querySelectorAll('.xcs-nav button').length, 6);
+    assert(!container.querySelector('.xcs-error'), container.textContent);
   }
+});
+
+test('legacy dashboard fences remain readable while new pages use the independent fence', async t => {
+  const h = await setup(t);
+  const page = h.vault.getAbstractFileByPath(h.plugin.root + '/00_工作台.md');
+  assert(page.text.includes('```creation-studio'));
+  assert(h.render('dashboard','creator-hub').container.querySelector('.xcs-hub'));
+  assert(h.render('dashboard','creation-studio').container.querySelector('.xcs-hub'));
 });
 
 test('dragging a card persists the stage in the work note without altering schedule', async t => {
   const h = await setup(t);
   const file = await h.plugin.createWork({ title: '可验证的作品', status: '选题', publish_date: '2026-12-31', next_action: '开始写稿' });
-  const { container } = h.render('production'); const card = container.querySelector('.creator-card'), column = container.querySelector('.creator-column[data-stage="写稿"]');
+  const { container } = h.render('production'); const card = container.querySelector('.xcs-card'), column = container.querySelector('.xcs-column[data-stage="写稿"]');
   const data = transfer(); dragEvent(h.dom.window, card, 'dragstart', data);
   const over = dragEvent(h.dom.window, column, 'dragover', data); assert(over.defaultPrevented);
   dragEvent(h.dom.window, column, 'drop', data); await tick();
@@ -73,8 +81,8 @@ test('dragging a card persists the stage in the work note without altering sched
 test('dragging a scheduled event updates its date while retaining the production stage', async t => {
   const h = await setup(t); const today = new Intl.DateTimeFormat('en-CA', {timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   const file = await h.plugin.createWork({ title: '发布排期', status: '剪辑', publish_date: today, publish_time: '20:00' });
-  const { container } = h.render('calendar'), event = container.querySelector('.creator-event');
-  const target = [...container.querySelectorAll('.creator-day')].find(el => el.dataset.date !== today && el.dataset.date.slice(0,7) === today.slice(0,7));
+  const { container } = h.render('calendar'), event = container.querySelector('.xcs-event');
+  const target = [...container.querySelectorAll('.xcs-day')].find(el => el.dataset.date !== today && el.dataset.date.slice(0,7) === today.slice(0,7));
   const data = transfer(); dragEvent(h.dom.window, event, 'dragstart', data); dragEvent(h.dom.window, target, 'drop', data); await tick();
   const fm = frontmatter(file.text); assert.equal(fm.publish_date, target.dataset.date); assert.equal(fm.status, '剪辑'); assert.equal(fm.publish_time, '20:00');
 });

@@ -3,7 +3,7 @@
 ## Prepare
 
 1. Review the [developer policies](https://docs.obsidian.md/community-directory/developer-policies), [submission requirements](https://docs.obsidian.md/community-directory/submission-requirements-for-plugins) and [official submission guide](https://docs.obsidian.md/Plugins/Releasing/Submit%20your%20plugin).
-2. Confirm ownership, MIT license, public repository contents and the unique plugin ID `creator-workbench`.
+2. Confirm ownership, MIT license, public repository contents and the unique plugin ID `xielab-creation-studio`.
 3. Update `package.json`, `manifest.json`, `versions.json`, the changelog and release notes together. The release tag must exactly match the manifest's `x.y.z`, without an added `v` prefix.
 4. Run `npm ci --ignore-scripts`, `npm run check` and `npm run release:zip` (the last command also requires Python 3).
 5. Test the three release assets in a clean desktop vault. First-run setup should create the pages without relying on a copied template folder. Verify the stage drag and calendar-date drag both persist to the work note.

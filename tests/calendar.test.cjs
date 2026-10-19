@@ -11,8 +11,8 @@ function response(properties, href = '/calendar/') {
 function xml(responses) { return '<d:multistatus xmlns:d="DAV:" xmlns:c="urn:ietf:params:xml:ns:caldav">'+responses+'</d:multistatus>'; }
 const collection = response('<d:displayname>创作排期</d:displayname><d:resourcetype><d:collection/><c:calendar/></d:resourcetype>');
 async function configured(t, handler = async () => ({status:404,headers:{},text:''}), extra = {}) {
-  const h = harness({schemaVersion:2,root:'创作管理',sync:{enabled:true,username:credentials.username,secretId:'creator-workbench-test-only',calendarName:'创作排期',serverUrl:'https://caldav.icloud.com/',calendarUrl:'https://p231-caldav.icloud.com.cn/calendar/',targets:{},...extra}}, handler);
-  t.after(h.cleanup); await h.plugin.onload(); h.secrets.set('creator-workbench-test-only',credentials.password); return h;
+  const h = harness({schemaVersion:2,root:'创作管理',sync:{enabled:true,username:credentials.username,secretId:'xielab-creation-studio-test-only',calendarName:'创作排期',serverUrl:'https://caldav.icloud.com/',calendarUrl:'https://p231-caldav.icloud.com.cn/calendar/',targets:{},...extra}}, handler);
+  t.after(h.cleanup); await h.plugin.onload(); h.secrets.set('xielab-creation-studio-test-only',credentials.password); return h;
 }
 
 test('Shanghai timed events, all-day year boundary and stable cancellation UID', () => {
@@ -44,7 +44,7 @@ test('discovery uses own SecretStorage and validates a direct named calendar wit
   const h = await configured(t, async () => ({status:207,text:xml(collection),headers:{}}));
   await h.plugin.calendar.connect();
   assert.equal(h.plugin.calendar.state.connected,true); assert.deepEqual(h.requests.map(r=>r.method),['PROPFIND']);
-  assert.deepEqual(h.secretReads,['creator-workbench-test-only']);
+  assert.deepEqual(h.secretReads,['xielab-creation-studio-test-only']);
   assert(!JSON.stringify(h.plugin.saved).includes(credentials.password));
 });
 

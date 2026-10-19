@@ -5,7 +5,7 @@
 Run `npm run check`. The suite uses the actual bundled `main.js` with a simulated Obsidian API, a DOM, an in-memory vault and a mocked HTTPS boundary. It checks persisted note changes rather than only calling isolated drag callbacks.
 
 - 9 pure data-rule checks: missing/zero metrics, complete rates, demo exclusion, month boundaries, schedule/stage independence and input validation.
-- 11 workspace/UI integration tests: first-run setup, bundled assets, resolved internal links, Bases YAML, no-overwrite repair, path rejection, examples, all six views, card and date drag persistence, publication-date gates, legacy migration and workspace switching.
+- 12 workspace/UI integration tests: first-run setup, bundled assets, resolved internal links, Bases YAML, no-overwrite repair, path rejection, examples, all six views, legacy/new dashboard fence compatibility, card and date drag persistence, publication-date gates, legacy migration and workspace switching.
 - 13 calendar tests: UTC/all-day encoding, UTF-8 folding, CR escaping, explicit real-work eligibility, no inferred publication time, independent credentials, CalDAV discovery, property/XML rejection, HTTPS host validation, controlled redirects, conditional writes, conflicts, complete create/reschedule/cancel lifecycle and pause/unload handling.
 - Release contract checks: metadata/version consistency, supported runtime imports, required documentation/license and private-data exclusions.
 - Packaging checks: ZIP CRC, expected asset list and byte-for-byte asset comparison.

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.1
+
+- Rename the public plugin to Creation Studio with unique ID `xielab-creation-studio` after the community directory reported the old ID occupied by an unrelated plugin.
+- Scope UI styles and internal calendar events to the independent plugin identity.
+- Use the `creation-studio` Markdown fence for new pages while supporting existing `creator-hub` dashboards and work-note types.
+- Keep the repository URL and existing work data unchanged; calendar credentials require independent setup under the new ID.
+
 ## 2.0.0
 
 - Bundle the six workspace pages, templates, Bases views and original banner into a standalone installable plugin.
