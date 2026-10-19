@@ -1,0 +1,10 @@
+{
+  "id": "creator-workbench",
+  "name": "Creator Workbench",
+  "version": "2.0.0",
+  "minAppVersion": "1.14.4",
+  "description": "Manage ideas, production, publishing schedules and reviews in linked notes, with optional one-way iCloud calendar sync.",
+  "author": "Xie Lab",
+  "authorUrl": "https://github.com/xielab2017",
+  "isDesktopOnly": true
+}

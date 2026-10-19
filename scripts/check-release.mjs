@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import { readFile, stat } from 'node:fs/promises';
+
+const manifest = JSON.parse(await readFile('manifest.json', 'utf8'));
+const pkg = JSON.parse(await readFile('package.json', 'utf8'));
+const versions = JSON.parse(await readFile('versions.json', 'utf8'));
+assert.match(manifest.id, /^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+assert(!manifest.id.includes('obsidian'));
+assert.match(manifest.version, /^\d+\.\d+\.\d+$/);
+assert.equal(manifest.version, pkg.version);
+assert.equal(versions[manifest.version], manifest.minAppVersion);
+assert.equal(manifest.isDesktopOnly, true);
+assert(manifest.description.length <= 250 && manifest.description.endsWith('.'));
+for (const file of ['main.js','manifest.json','styles.css','README.md','LICENSE','docs/PRIVACY.md','docs/VALIDATION.md','docs/RELEASING.md']) assert((await stat(file)).size > 0, file);
+const main = await readFile('main.js', 'utf8');
+for (const match of main.matchAll(/require\(["']([^"']+)["']\)/g)) assert(['obsidian','node:https'].includes(match[1]), 'Unexpected runtime import: ' + match[1]);
+for (const forbidden of ['/Users/mac/','obsidian-local-rest-api','app.plugins','full-calendar-remastered/data.json','fcr-caldav-pwd-','xsec_token=','liweixie@mac.com']) assert(!main.includes(forbidden), 'Private or unsupported integration: ' + forbidden);
+assert(!/\beval\s*\(|new Function\s*\(/.test(main));
+assert((await readFile('LICENSE','utf8')).includes('MIT License'));
+const readme = await readFile('README.md','utf8');
+for (const disclosure of ['Network and account disclosure','icloud.com','SecretStorage','Desktop only','no external account']) assert(readme.includes(disclosure));
+console.log('Release contract passed: metadata, runtime imports, license, disclosures and private-data exclusions.');

@@ -1,0 +1,19 @@
+{
+  "name": "creator-workbench",
+  "version": "2.0.0",
+  "private": true,
+  "description": "A note-based creation workflow for Obsidian.",
+  "license": "MIT",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node tests/core.cjs && node --test tests/*.test.cjs",
+    "check": "npm run build && node --check main.js && npm test && node scripts/check-release.mjs",
+    "release:zip": "node scripts/package.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "jsdom": "30.1.3",
+    "obsidian": "1.14.4",
+    "yaml": "2.9.1"
+  }
+}

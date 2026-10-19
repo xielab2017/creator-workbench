@@ -1,0 +1,6 @@
+Use case: stylized-concept
+Asset type: an original wide 3:1 decorative hero banner background for a polished Chinese Obsidian content creator workspace, not a UI screenshot.
+Primary request: a refined editorial 3D still life symbolizing inspiration becoming finished work, made of elegant interwoven ivory paper ribbons, a few translucent frosted-glass planes and delicate champagne-gold threads. A small soft amber glow weaves through the abstract forms, evoking creative momentum. Quiet, sophisticated, tactile, inviting.
+Composition: panoramic landscape, 3:1 ratio. Keep the entire left 45 percent very light warm ivory with generous calm negative space for live interface text. Sculptural shapes are concentrated on the right side and gently extend to the center. Complete objects with ample margin. Broad horizontal arrangement suitable for a shallow website hero crop.
+Color palette: warm white and pale sand (#F7F4EE), champagne gold (#B8A17C), touches of muted sage and dusty lavender. No saturated colors. Soft diffused studio lighting, realistic ambient occlusion, restrained luminous highlights, subtle paper grain, fine elegant shadows. Gallery-quality high-end productivity editorial art.
+Constraints: image only, no text, no numbers, no letters, no logo, no watermark, no interface controls, no people, no dense network diagram, no neon, no black background.
